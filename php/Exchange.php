@@ -210,6 +210,7 @@ class Exchange {
         'virwox',
         'wex',
         'xbtce',
+        'xex',
         'yobit',
         'yunbi',
         'zaif',
