@@ -174,6 +174,7 @@ const exchanges = {
     'virwox':                  require ('./js/virwox.js'),
     'wex':                     require ('./js/wex.js'),
     'xbtce':                   require ('./js/xbtce.js'),
+    'xex':                     require ('./js/xex.js'),
     'yobit':                   require ('./js/yobit.js'),
     'yunbi':                   require ('./js/yunbi.js'),
     'zaif':                    require ('./js/zaif.js'),
