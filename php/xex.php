@@ -43,10 +43,10 @@ class xex extends Exchange {
                 'month' => 'MONTH',
             ),
             'urls' => array (
-                'logo' => '',
-                'api' => 'https://api.xex-dev.com',
-                'www' => 'http://www.xex-dev.com/cross/home',
-                'doc' => 'https://xex.zendesk.com/hc/en-us/categories/360001030591',
+                'logo' => 'https://www.crossexchange.io/images/logo_icon.png',
+                'api' => 'https://api.crossexchange.io',
+                'www' => 'https://www.crossexchange.io/cross/home',
+                'doc' => 'https://support.crossexchange.io/hc/en-us/categories/360001030591?flash_digest=4496738595f09128fc199486ac8f0fcee028b0ab',
             ),
             'api' => array (
                 'public' => array (
@@ -84,7 +84,7 @@ class xex extends Exchange {
             array ( 'id' => 'XRP_USDT', 'symbol' => 'XRP_USDT', 'base' => 'USDT', 'quote' => 'XRP' ),
             array ( 'id' => 'XEX_USDT', 'symbol' => 'XEX_USDT', 'base' => 'USDT', 'quote' => 'XEX' ),
             array ( 'id' => 'ETH_BTC', 'symbol' => 'ETH_BTC', 'base' => 'BTC', 'quote' => 'ETH' ),
-            array ( 'id' => 'ETH_BTC', 'symbol' => 'LTC_BTC', 'base' => 'BTC', 'quote' => 'LTC' ),
+            array ( 'id' => 'LTC_BTC', 'symbol' => 'LTC_BTC', 'base' => 'BTC', 'quote' => 'LTC' ),
             array ( 'id' => 'XRP_BTC', 'symbol' => 'XRP_BTC', 'base' => 'BTC', 'quote' => 'XRP' ),
             array ( 'id' => 'ADA_BTC', 'symbol' => 'ADA_BTC', 'base' => 'BTC', 'quote' => 'ADA' ),
             array ( 'id' => 'XEX_BTC', 'symbol' => 'XEX_BTC', 'base' => 'BTC', 'quote' => 'XEX' ),
@@ -111,7 +111,7 @@ class xex extends Exchange {
     }
 
     public function fetch_order_book ($symbol, $limit = null, $params = array ()) {
-    	$this->load_markets();
+        $this->load_markets();
         $response = $this->publicGetGETV1ApiDepth (array_merge (array (
             'pair' => $this->market_id($symbol),
         ), $params));
@@ -119,7 +119,7 @@ class xex extends Exchange {
     }
 
     public function fetch_ticker ($symbol, $params = array ()) {
-    	$this->load_markets();
+        $this->load_markets();
         $response = $this->publicGetGETV1ApiTicker (array_merge (array (
             'pair' => $this->market_id($symbol),
         ), $params));
@@ -150,7 +150,7 @@ class xex extends Exchange {
     }
 
     public function fetch_ohlcv ($symbol, $timeframe = '1d', $since = null, $limit = null, $params = array ()) {
-    	$this->load_markets();
+        $this->load_markets();
         $market = $this->market ($symbol);
         $response = $this->publicGetGETV1ApiKline (array_merge (array (
             'pair' => $market['id'],
@@ -161,15 +161,15 @@ class xex extends Exchange {
     }
 
     public function parse_trade ($trade, $market) {
-    	$side = 'sell';
-    	$price = (float) $trade[1];
-    	$epsilon = 0.00000000001;
-    	if($price > $epsilon)
-    		$side = 'buy';
+        $side = 'sell';
+        $price = (float) $trade[1];
+        $epsilon = 0.00000000001;
+        if($price > $epsilon)
+            $side = 'buy';
         $timestamp = $trade[3];
         $fee_num = null;
         if( count($trade) >=7 )
-        	$fee_num = (float) $trade[6];
+            $fee_num = (float) $trade[6];
         return array (
             'id' => $trade[0],
             'info' => $trade,
@@ -186,7 +186,7 @@ class xex extends Exchange {
     }
 
     public function fetch_trades ($symbol, $since = null, $limit = null, $params = array ()) {
-    	$this->load_markets();
+        $this->load_markets();
         $market = $this->market ($symbol);
         $response = $this->publicGetGETV1ApiTrades (array_merge (array (
             'pair' => $market['id'],
@@ -194,37 +194,37 @@ class xex extends Exchange {
         $trades = $response['data'];
         $new_trade = array();
         $num = count($trades); 
-		for($i=0;$i<$num;++$i)
-		{
-			$one_trade = array();
-			$count = count($trades[$i]);
-			for($k = 0; $k < $count; ++$k)
-				array_push($one_trade, $trades[$i][$k]);
+         for($i=0;$i<$num;++$i)
+         {
+            $one_trade = array();
+            $count = count($trades[$i]);
+            for($k = 0; $k < $count; ++$k)
+                  array_push($one_trade, $trades[$i][$k]);
 
-			array_push($one_trade, $symbol);
-			array_push($new_trade, $one_trade);
-		} 
+            array_push($one_trade, $symbol);
+            array_push($new_trade, $one_trade);
+         } 
         return $this->parse_trades($new_trade, $market, $since, $limit);
     }
 
     public function fetch_my_trades ($symbol = null, $since = null, $limit = null, $params = array ()) {
-    	$this->load_markets();
+        $this->load_markets();
         $response = $this->privatePostPOSTV1ApiTrades ($params);
         $trades = $response['data'];
         $new_trade = array();
         $num = count($trades); 
-		for($i=0;$i<$num;++$i)
-		{
-			$one_trade = array();
-			array_push($one_trade, $trades[$i][0]);
-			array_push($one_trade, $trades[$i][3]);
-			array_push($one_trade, $trades[$i][4]);
-			array_push($one_trade, $trades[$i][2]);
-			array_push($one_trade, $trades[$i][6]);
-			array_push($one_trade, $trades[$i][1]);
-			array_push($one_trade, $trades[$i][8]);
-			array_push($new_trade, $one_trade);
-		} 
+         for($i=0;$i<$num;++$i)
+         {
+            $one_trade = array();
+            array_push($one_trade, $trades[$i][0]);
+            array_push($one_trade, $trades[$i][3]);
+            array_push($one_trade, $trades[$i][4]);
+            array_push($one_trade, $trades[$i][2]);
+            array_push($one_trade, $trades[$i][6]);
+            array_push($one_trade, $trades[$i][1]);
+            array_push($one_trade, $trades[$i][8]);
+            array_push($new_trade, $one_trade);
+         } 
         return $this->parse_trades($new_trade, null, $since, $limit);
     }
 
@@ -280,7 +280,7 @@ class xex extends Exchange {
     }
 
     public function fetch_order_books ($symbol = null, $params = array ()) {
-		$this->load_markets();
+         $this->load_markets();
         $response = $this->privatePostPOSTV1ApiOrders ($params);
         return $this->parse_orders ($response['data'], null, null, null);
     }
@@ -289,17 +289,17 @@ class xex extends Exchange {
         $id = $order[0];
         $timestamp = $order[2];
         $symbol = $order[1];
-		$filled = (float) $order[3];
+         $filled = (float) $order[3];
         $amount = (float) $order[4];
-		$side = 'sell';
-		$price = (float) $order[5];
-		if($price > 0.00000000000000001)
+         $side = 'sell';
+         $price = (float) $order[5];
+         if($price > 0.00000000000000001)
             $side = 'buy';
         $remaining = $amount - $filled;
-		$tradePrice = (float) $order[6];
-		$cost = $filled * $tradePrice;
+         $tradePrice = (float) $order[6];
+         $cost = $filled * $tradePrice;
         $type = $order[7];
-		$stopPrice = (float) $order[8];
+         $stopPrice = (float) $order[8];
         $status = $this->parse_order_status ($order[9]);
 
         return array (
@@ -324,13 +324,13 @@ class xex extends Exchange {
     }
 
     public function fetch_open_orders ($symbol = null, $since = null, $limit = null, $params = array()) {
-		$this->load_markets();
+         $this->load_markets();
         $response = $this->privatePostPOSTV1ApiAuthOrders ();
         return $this->parse_orders ($response['data'], null, $since, $limit);
     }
 
     public function create_order ($symbol, $type, $side, $amount, $price = null, $params = array ()) {
-    	$this->load_markets();
+        $this->load_markets();
         $order = array (
             'isbid' => $side,
             'order_type' => $type,
@@ -340,7 +340,7 @@ class xex extends Exchange {
         if ($type === 'STOP-LIMIT')
             $order['stop_price'] = $price;
         else
-        	$order['stop_price'] = 0;
+            $order['stop_price'] = 0;
 
         $result = $this->privatePostPOSTV1ApiPlaceOrder (array_merge ($order, $params));
         return array (
@@ -350,7 +350,7 @@ class xex extends Exchange {
     }
 
     public function cancel_order ($id, $symbol = null, $params = array ()) {
-    	if ($symbol === null)
+        if ($symbol === null)
             throw new ExchangeError ($this->id . ' cancelOrder() requires a symbol argument');
         $this->load_markets();
         return $this->privatePostPOSTV1ApiCancelOrder (array_merge (array (
@@ -389,7 +389,6 @@ class xex extends Exchange {
             $url .= '?' . $query_str . '&auth_sign=' . $signed;
             $headers = array ( 'Content-Type' => 'application/json' );
         }
-        var_dump ($url);
         return array ( 'url' => $url, 'method' => $method, 'body' => $body, 'headers' => $headers );
     }
 
