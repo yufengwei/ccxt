@@ -43,10 +43,10 @@ class xex (Exchange):
                 'month': 'MONTH',
             },
             'urls': {
-                'logo': '',
-                'api': 'https://api.xex-dev.com',
-                'www': 'http://www.xex-dev.com/cross/home',
-                'doc': 'https://xex.zendesk.com/hc/en-us/categories/360001030591',
+                'logo': 'https://www.crossexchange.io/images/logo_icon.png',
+                'api': 'https://api.crossexchange.io',
+                'www': 'https://www.crossexchange.io/cross/home',
+                'doc': 'https://support.crossexchange.io/hc/en-us/categories/360001030591?flash_digest=4496738595f09128fc199486ac8f0fcee028b0ab',
             },
             'api': {
                 'public': {
@@ -82,7 +82,7 @@ class xex (Exchange):
             { 'id': 'LTC_USDT', 'symbol': 'LTC_USDT', 'base': 'USDT', 'quote': 'LTC' },
             { 'id': 'BCH_USDT', 'symbol': 'BCH_USDT', 'base': 'USDT', 'quote': 'BCH' },
             { 'id': 'XRP_USDT', 'symbol': 'XRP_USDT', 'base': 'USDT', 'quote': 'XRP' },
-			{ 'id': 'XEX_USDT', 'symbol': 'XEX_USDT', 'base': 'USDT', 'quote': 'XEX' },
+            { 'id': 'XEX_USDT', 'symbol': 'XEX_USDT', 'base': 'USDT', 'quote': 'XEX' },
             { 'id': 'ETH_BTC', 'symbol': 'ETH_BTC', 'base': 'BTC', 'quote': 'ETH' },
             { 'id': 'LTC_BTC', 'symbol': 'LTC_BTC', 'base': 'BTC', 'quote': 'LTC' },
             { 'id': 'XRP_BTC', 'symbol': 'XRP_BTC', 'base': 'BTC', 'quote': 'XRP' },
@@ -240,7 +240,7 @@ class xex (Exchange):
         sidex = 'sell'
         price = float(order[5])
         if price > 0.0000000000001:
-        	sidex = 'buy'
+            sidex = 'buy'
         result = {
             'info': order,
             'id': id,
@@ -368,7 +368,6 @@ class xex (Exchange):
             query_str = self.urlencode(query)
             url += '?' + query_str + '&auth_sign=' + signed;
             headers = {'Content-Type': 'application/json'}
-        print(url)
         return {'url': url, 'method': method, 'body': body, 'headers': headers}
 
     def request(self, path, api='public', method='GET', params={}, headers=None, body=None):
